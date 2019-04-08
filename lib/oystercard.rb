@@ -6,7 +6,7 @@ def initialize
 end
 
 def top_up(value)
-  @balance += value
+  raise "maximum balance exceeded" if (@balance += value) > 90
 end
 
 end
