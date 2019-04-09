@@ -1,6 +1,7 @@
 require 'oystercard'
 
 describe Oystercard do
+
   it "checks new card has a balance of 0" do
     expect(subject.balance).to eq 0
   end
@@ -24,5 +25,26 @@ describe Oystercard do
       expect(subject.balance).to eq 25
     end
 
+  end
+
+  describe "#in_journey?" do
+    it 'when new card is created, it is not in journey' do
+      expect(subject).not_to be_in_journey
+    end
+  end
+
+  let (:oyster) {subject}
+
+  describe "#touch_in" do
+    it "sets in_journey to true" do
+      expect{oyster.touch_in}.to change {oyster.in_journey?}.from(false).to(true)
+    end
+  end
+
+  describe "#touch_out" do
+    it "sets in_journey to false" do
+      oyster.touch_in
+      expect{oyster.touch_out}.to change {oyster.in_journey?}.from(true).to(false)
+    end
   end
 end
