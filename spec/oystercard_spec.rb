@@ -2,6 +2,8 @@ require 'oystercard'
 
 describe Oystercard do
   let(:station) {double :station}
+  let (:oyster) {subject}
+  # let(:entry_station) {double :entry_station}
 
   context "initialize the oystercard" do
     it "checks new card has a balance of 0" do
@@ -26,13 +28,12 @@ describe Oystercard do
     end
   end
 
-  describe "#in_journey?" do
-    it 'when new card is created, it is not in journey' do
-      expect(subject).not_to be_in_journey
-    end
-  end
+  # describe "#in_journey?" do
+  #   it 'when new card is created, it is not in journey' do
+  #     expect(subject).not_to be_in_journey
+  #   end
+  # end
 
-  let (:oyster) {subject}
   context "Unusd new card" do
     describe "#touch_in" do
       it "raise an error if balance below minimum balance" do
@@ -41,7 +42,6 @@ describe Oystercard do
   end 
 end
 
-
   context "touch in and out" do 
     before :each do
       oyster.top_up(5)
@@ -49,23 +49,24 @@ end
     end 
 
     describe "#touch_in" do
-      it "sets in_journey to true" do
-        expect(oyster).to be_in_journey
-      end
+      # it "sets in_journey to true" do
+      #   expect(oyster).to be_in_journey
+      # end
 
       it "records the entry station for the current journey" do
-        expect(subject.entry_station).to eq station
+        expect(subject.touch_in(station)).to eq({entry_station: station})
       end
     end
 
     describe "#touch_out" do
-      it "sets in_journey to false" do
-        oyster.touch_out(station)
-        expect(oyster).not_to be_in_journey
-      end
+      # it "sets in_journey to false" do
+      #   oyster.touch_out(station)
+      #   expect(oyster).not_to be_in_journey
+      # end
     
       it "reduces the balance by the minimum fare" do
-        expect{ oyster.touch_out(station) }.to change {oyster.balance }.by ( -Oystercard::MINIMUM_FARE )
+        stub_const('Oystercard::MINIMUM_FARE', 3)
+        expect{ oyster.touch_out(station) }.to change {oyster.balance }.by(-Oystercard::MINIMUM_FARE)
       end
 
       it "record the exit station" do 
@@ -78,11 +79,11 @@ end
         }]
       end
 
-      it "forgets entry station" do
-        oyster.top_up(5)
-        oyster.touch_in(station)
-        expect{ oyster.touch_out(station) }.to change { oyster.entry_station }.from( station ).to( nil )
-      end
+      # it "forgets entry station" do
+      #   oyster.top_up(5)
+      #   oyster.touch_in(station)
+      #   expect{ oyster.touch_out(station) }.to change { oyster.entry_station }.from( station ).to( nil )
+      # end
     end 
 
   end
